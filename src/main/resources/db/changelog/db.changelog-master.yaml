@@ -1,2 +1,15 @@
 databaseChangeLog:
-  - 
+  - changeSet:
+      id: 1
+      author: Hércules de Sousa Silva
+      validCheckSum: ANY
+      sqlFile:
+        path: 01_inital_databse.sql
+        relativeToChangelogFile: true
+  - changeSet:
+      id: 2
+      author: Hércules de Sousa Silva
+      validCheckSum: ANY
+      sqlFile:
+        path: 02_doctor_table.sql
+        relativeToChangelogFile: true
