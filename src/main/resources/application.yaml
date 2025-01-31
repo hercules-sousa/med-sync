@@ -14,9 +14,6 @@ spring:
     hikari:
       connection-init-sql: ALTER SESSION SET CURRENT_SCHEMA = "STUDY"
 
-  jpa:
-    database-platform: org.hibernate.dialect.Oracle10gDialect
-
   security:
     user:
       name: study
