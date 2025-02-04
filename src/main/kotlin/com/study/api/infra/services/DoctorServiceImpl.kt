@@ -2,6 +2,7 @@ package com.study.api.infra.services
 
 import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
+import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.models.dto.responses.CreateDoctorResponse
 import com.study.api.core.models.dto.responses.DeleteDoctorResponse
 import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
@@ -27,6 +28,10 @@ class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDocto
 
     override fun delete(id: Long): DeleteDoctorResponse {
         return doctorRepository.delete(id)
+    }
+
+    override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
+        return doctorRepository.update(doctor)
     }
 
 }

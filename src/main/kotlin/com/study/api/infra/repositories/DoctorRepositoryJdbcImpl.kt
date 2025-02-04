@@ -2,6 +2,7 @@ package com.study.api.infra.repositories
 
 import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
+import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.models.dto.responses.CreateDoctorResponse
 import com.study.api.core.models.dto.responses.DeleteDoctorResponse
 import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
@@ -9,15 +10,9 @@ import com.study.api.core.repositories.IDoctorRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
-import java.sql.Timestamp
-import java.time.Instant
 
 @Repository
 class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorRepository {
-
-    companion object {
-        val tableName = "DOCTORS"
-    }
 
     private val findAllRowMapper = RowMapper { rs, _ ->
         Doctor(
@@ -77,7 +72,36 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         val doctor = findById(id) ?: throw IllegalStateException("Doctor with id $id not found")
 
         jdbcTemplate.update("DELETE FROM DOCTORS WHERE id = ?", id)
+
         return DeleteDoctorResponse(
+            name = doctor.name,
+            email = doctor.email,
+            phoneNumber = doctor.phoneNumber,
+            specialty = doctor.specialty,
+            crmNumber = doctor.crmNumber
+        )
+    }
+
+    override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
+        val updates = mutableMapOf<String, Any?>()
+
+        updates["NAME"] = doctor.name
+        updates["EMAIL"] = doctor.email
+        updates["PHONE_NUMBER"] = doctor.phoneNumber
+        updates["SPECIALTY"] = doctor.specialty
+        updates["CRM_NUMBER"] = doctor.crmNumber
+
+        if (updates.isEmpty()) {
+            throw IllegalArgumentException("No fields provided for update")
+        }
+
+        val setClause = updates.keys.joinToString(", ") { "$it = ?" }
+        val sql = "UPDATE DOCTORS SET $setClause WHERE ID = ?"
+
+        jdbcTemplate.update(sql, *updates.values.toTypedArray(), doctor.id)
+
+        return CreateDoctorResponse(
+            id = doctor.id,
             name = doctor.name,
             email = doctor.email,
             phoneNumber = doctor.phoneNumber,
