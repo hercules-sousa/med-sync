@@ -1,5 +1,6 @@
 package com.study.api.infra.services
 
+import com.fasterxml.jackson.databind.exc.InvalidNullException
 import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
@@ -31,7 +32,12 @@ class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDocto
     }
 
     override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
-        return doctorRepository.update(doctor)
+        try {
+            findById(doctor.id)
+            return doctorRepository.update(doctor)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Doctor update exception", e)
+        }
     }
 
 }

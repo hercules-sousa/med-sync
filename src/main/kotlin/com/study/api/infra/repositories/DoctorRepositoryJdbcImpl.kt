@@ -41,11 +41,16 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         return jdbcTemplate.query(sql, findAllRowMapper)
     }
 
+    @Throws(RuntimeException::class)
     override fun findById(id: Long): FindByIdDoctorReponse? {
-        val sql = "SELECT * FROM DOCTORS WHERE id = ?"
-        val doctor = jdbcTemplate.queryForObject(sql, findByIdRowMapper, id)
-        return doctor
+        return try {
+            val sql = "SELECT * FROM DOCTORS WHERE id = ?"
+            jdbcTemplate.queryForObject(sql, findByIdRowMapper, id)
+        } catch (e: Exception) {
+            throw RuntimeException("Error finding doctor with ID $id", e)
+        }
     }
+
 
     override fun create(doctor: CreateDoctorRequest): CreateDoctorResponse {
         val sql = """
@@ -90,10 +95,6 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         updates["PHONE_NUMBER"] = doctor.phoneNumber
         updates["SPECIALTY"] = doctor.specialty
         updates["CRM_NUMBER"] = doctor.crmNumber
-
-        if (updates.isEmpty()) {
-            throw IllegalArgumentException("No fields provided for update")
-        }
 
         val setClause = updates.keys.joinToString(", ") { "$it = ?" }
         val sql = "UPDATE DOCTORS SET $setClause WHERE ID = ?"
