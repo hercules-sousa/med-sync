@@ -4,6 +4,7 @@ import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.service.IDoctorService
+import org.apache.coyote.Response
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.dao.EmptyResultDataAccessException
@@ -20,9 +21,12 @@ class DoctorController(private val doctorService: IDoctorService) {
     }
 
     @GetMapping
-    fun findAll(): List<Doctor> {
-        val doctors = doctorService.findAll()
-        return doctors
+    fun findAll(): ResponseEntity<*> {
+        return try {
+            ResponseEntity(doctorService.findAll(), HttpStatus.OK)
+        } catch (e: Exception) {
+            ResponseEntity("An error happened when finding all doctors", HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @GetMapping("/{id}")
@@ -43,6 +47,7 @@ class DoctorController(private val doctorService: IDoctorService) {
         return try {
             ResponseEntity(doctorService.create(doctor), HttpStatus.CREATED)
         } catch (e: DuplicateKeyException) {
+            LOGGER.error(e.stackTraceToString())
             ResponseEntity("Duplicated Entry", HttpStatus.BAD_REQUEST)
         } catch (e: Exception) {
             LOGGER.error(e.stackTraceToString())

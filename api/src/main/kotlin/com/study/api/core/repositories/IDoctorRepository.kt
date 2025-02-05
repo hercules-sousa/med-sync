@@ -5,11 +5,12 @@ import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.models.dto.responses.CreateDoctorResponse
 import com.study.api.core.models.dto.responses.DeleteDoctorResponse
+import com.study.api.core.models.dto.responses.FindAllDoctorResponse
 import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
 
 interface IDoctorRepository {
 
-    fun findAll(): List<Doctor>
+    fun findAll(): List<FindAllDoctorResponse>
 
     fun findById(id: Long): FindByIdDoctorReponse?
 

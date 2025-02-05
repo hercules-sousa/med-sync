@@ -6,6 +6,7 @@ import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.models.dto.responses.CreateDoctorResponse
 import com.study.api.core.models.dto.responses.DeleteDoctorResponse
+import com.study.api.core.models.dto.responses.FindAllDoctorResponse
 import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
 import com.study.api.core.repositories.IDoctorRepository
 import com.study.api.core.service.IDoctorService
@@ -15,7 +16,7 @@ import java.util.Optional
 @Service
 class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDoctorService {
 
-    override fun findAll(): List<Doctor> {
+    override fun findAll(): List<FindAllDoctorResponse> {
         return doctorRepository.findAll()
     }
 
