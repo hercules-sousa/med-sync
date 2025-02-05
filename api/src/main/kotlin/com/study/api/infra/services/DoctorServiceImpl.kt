@@ -32,12 +32,8 @@ class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDocto
     }
 
     override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
-        try {
-            findById(doctor.id)
-            return doctorRepository.update(doctor)
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Doctor update exception", e)
-        }
+        findById(doctor.id)
+        return doctorRepository.update(doctor)
     }
 
 }

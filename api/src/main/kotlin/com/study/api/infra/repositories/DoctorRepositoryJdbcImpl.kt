@@ -41,16 +41,15 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         return jdbcTemplate.query(sql, findAllRowMapper)
     }
 
-    @Throws(RuntimeException::class)
+    @Throws(NoSuchElementException::class)
     override fun findById(id: Long): FindByIdDoctorReponse? {
         return try {
             val sql = "SELECT * FROM DOCTORS WHERE id = ?"
             jdbcTemplate.queryForObject(sql, findByIdRowMapper, id)
         } catch (e: Exception) {
-            throw RuntimeException("Error finding doctor with ID $id", e)
+            throw NoSuchElementException("Error finding doctor with ID $id", e)
         }
     }
-
 
     override fun create(doctor: CreateDoctorRequest): CreateDoctorResponse {
         val sql = """
