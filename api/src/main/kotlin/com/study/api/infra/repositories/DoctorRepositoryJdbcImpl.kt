@@ -41,7 +41,6 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         } catch (ex: Exception) {
             throw RuntimeException("Error finding all doctors")
         }
-
     }
 
     @Throws(NoSuchElementException::class)
