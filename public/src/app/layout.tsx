@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className="antialiased p-8 h-screen">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

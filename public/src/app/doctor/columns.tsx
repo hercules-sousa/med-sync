@@ -54,13 +54,8 @@ export const columns: ColumnDef<FindAllDoctorResponse>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(String(doctor.id))}
             >
-              Copy payment ID
+              Copy doctor ID
             </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

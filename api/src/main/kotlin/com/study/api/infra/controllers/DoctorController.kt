@@ -1,10 +1,8 @@
 package com.study.api.infra.controllers
 
-import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.service.IDoctorService
-import org.apache.coyote.Response
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.dao.EmptyResultDataAccessException
