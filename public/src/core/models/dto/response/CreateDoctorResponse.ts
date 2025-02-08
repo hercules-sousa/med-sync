@@ -1,5 +1,5 @@
-export interface FindAllDoctorResponse {
-  id: number;
+export interface CreateDoctorResponse {
+  id: string;
   name: string;
   email: string;
   phoneNumber: string;

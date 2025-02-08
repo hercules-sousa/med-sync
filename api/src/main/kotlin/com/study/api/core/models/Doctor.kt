@@ -1,6 +1,6 @@
 package com.study.api.core.models;
 
-data class Doctor(
+data class Doctor (
     val id: Long? = null,
     val name: String,
     val email: String?,
@@ -8,5 +8,6 @@ data class Doctor(
     val specialty: String?,
     val crmNumber: String,
     val createdAt: String? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val honorific: String
 )

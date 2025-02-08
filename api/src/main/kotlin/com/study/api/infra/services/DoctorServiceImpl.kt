@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidNullException
 import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
-import com.study.api.core.models.dto.responses.CreateDoctorResponse
-import com.study.api.core.models.dto.responses.DeleteDoctorResponse
-import com.study.api.core.models.dto.responses.FindAllDoctorResponse
-import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
+import com.study.api.core.models.dto.responses.*
 import com.study.api.core.repositories.IDoctorRepository
 import com.study.api.core.service.IDoctorService
 import org.springframework.stereotype.Service
@@ -32,7 +29,7 @@ class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDocto
         return doctorRepository.delete(id)
     }
 
-    override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
+    override fun update(doctor: UpdateDoctorRequest): UpdateDoctorResponse {
         findById(doctor.id)
         return doctorRepository.update(doctor)
     }

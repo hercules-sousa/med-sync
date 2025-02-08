@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
@@ -17,6 +16,13 @@ export const columns: ColumnDef<FindAllDoctorResponse>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const doctor: FindAllDoctorResponse = row.original;
+      if (doctor.honorific) {
+        return `${doctor.honorific}. ${doctor.name}`;
+      }
+      return doctor.name;
+    },
   },
   {
     accessorKey: "email",

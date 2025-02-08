@@ -34,7 +34,7 @@ const data = {
           url: "/patients",
         },
         {
-          title: "Doctor List",
+          title: "Doctors",
           url: "/doctors",
         },
       ],

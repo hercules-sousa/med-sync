@@ -29,6 +29,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { HonorificEnum } from "@/core/models/enums/HonorificEnum";
 
 const DoctorsPage = async () => {
   const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
@@ -97,9 +106,28 @@ const DoctorsPage = async () => {
 
                     <Input id="crm-number" />
                   </div>
+
+                  <div className="flex flex-col gap-3 items-start">
+                    <Label htmlFor="crm-number">Honorific</Label>
+
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {Object.entries(HonorificEnum).map(([key, value]) => (
+                            <SelectItem key={key} value={key}>
+                              {value}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                <SheetFooter className="mt-4">
+                <SheetFooter className="mt-6">
                   <SheetClose asChild>
                     <Button type="submit">Save changes</Button>
                   </SheetClose>
@@ -107,6 +135,7 @@ const DoctorsPage = async () => {
               </SheetContent>
             </Sheet>
           </div>
+
           <DataTable columns={columns} data={doctors} />
         </div>
       </SidebarInset>

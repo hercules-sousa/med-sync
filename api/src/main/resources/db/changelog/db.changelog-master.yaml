@@ -20,3 +20,10 @@ databaseChangeLog:
       sqlFile:
         path: 03_doctor_sequence.sql
         relativeToChangelogFile: true
+  - changeSet:
+      id: 4
+      author: Hércules de Sousa Silva
+      validCheckSum: ANY
+      sqlFile:
+        path: 04_honorific_column.sql
+        relativeToChangelogFile: true

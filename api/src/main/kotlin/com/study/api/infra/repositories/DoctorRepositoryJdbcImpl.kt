@@ -2,10 +2,7 @@ package com.study.api.infra.repositories
 
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
-import com.study.api.core.models.dto.responses.CreateDoctorResponse
-import com.study.api.core.models.dto.responses.DeleteDoctorResponse
-import com.study.api.core.models.dto.responses.FindAllDoctorResponse
-import com.study.api.core.models.dto.responses.FindByIdDoctorReponse
+import com.study.api.core.models.dto.responses.*
 import com.study.api.core.repositories.IDoctorRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -22,6 +19,7 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
             phoneNumber = rs.getString("phone_number"),
             specialty = rs.getString("specialty"),
             crmNumber = rs.getString("crm_number"),
+            honorific = rs.getString("honorific"),
         )
     }
 
@@ -55,11 +53,11 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
 
     override fun create(doctor: CreateDoctorRequest): CreateDoctorResponse {
         val sql = """
-            INSERT INTO DOCTORS (ID, NAME, EMAIL, PHONE_NUMBER, SPECIALTY, CRM_NUMBER, CREATED_AT, IS_ACTIVE) 
-            VALUES (DOCTORS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?)
+            INSERT INTO DOCTORS (ID, NAME, EMAIL, PHONE_NUMBER, SPECIALTY, CRM_NUMBER, CREATED_AT, IS_ACTIVE, HONORIFIC) 
+            VALUES (DOCTORS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?, ?)
         """.trimIndent()
 
-        jdbcTemplate.update(sql, doctor.name, doctor.email, doctor.phoneNumber, doctor.specialty, doctor.crmNumber, true)
+        jdbcTemplate.update(sql, doctor.name, doctor.email, doctor.phoneNumber, doctor.specialty, doctor.crmNumber, true, doctor.honorific)
 
         val id = jdbcTemplate.queryForObject("SELECT DOCTORS_SEQ.CURRVAL FROM DUAL", Long::class.java)
             ?: throw IllegalStateException("Doctor with id $doctor does not exist")
@@ -70,7 +68,8 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
             email = doctor.email,
             phoneNumber = doctor.phoneNumber,
             specialty = doctor.specialty,
-            crmNumber = doctor.crmNumber
+            crmNumber = doctor.crmNumber,
+            honorific = doctor.honorific,
         )
     }
 
@@ -88,7 +87,7 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         )
     }
 
-    override fun update(doctor: UpdateDoctorRequest): CreateDoctorResponse {
+    override fun update(doctor: UpdateDoctorRequest): UpdateDoctorResponse {
         val updates = mutableMapOf<String, Any?>()
 
         updates["NAME"] = doctor.name
@@ -102,13 +101,14 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
 
         jdbcTemplate.update(sql, *updates.values.toTypedArray(), doctor.id)
 
-        return CreateDoctorResponse(
+        return UpdateDoctorResponse(
             id = doctor.id,
             name = doctor.name,
             email = doctor.email,
             phoneNumber = doctor.phoneNumber,
             specialty = doctor.specialty,
-            crmNumber = doctor.crmNumber
+            crmNumber = doctor.crmNumber,
+            honorific = doctor.honorific
         )
     }
 

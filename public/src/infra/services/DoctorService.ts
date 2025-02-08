@@ -1,11 +1,17 @@
+import { CreateDoctorRequest } from "@/core/models/dto/request/CreateDoctorRequest";
+import { CreateDoctorResponse } from "@/core/models/dto/response/CreateDoctorResponse";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 import { IDoctorService } from "@/core/services/IDoctorService";
-import { HttpClient } from "@/core/utils/IHttpClient";
+import { IHttpClient } from "@/core/utils/IHttpClient";
 
 export class DoctorServiceImpl implements IDoctorService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: IHttpClient) {}
 
   async findAll(): Promise<FindAllDoctorResponse[]> {
     return this.httpClient.get("/doctor");
+  }
+
+  async create(doctor: CreateDoctorRequest): Promise<CreateDoctorResponse> {
+    return this.httpClient.post("/doctor", doctor);
   }
 }

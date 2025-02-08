@@ -7,4 +7,5 @@ data class CreateDoctorResponse(
     val phoneNumber: String?,
     val specialty: String?,
     val crmNumber: String,
+    val honorific: String
 )

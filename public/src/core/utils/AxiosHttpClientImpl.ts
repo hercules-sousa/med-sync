@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { HttpClient } from "./IHttpClient";
+import { IHttpClient } from "./IHttpClient";
 
-export class AxiosHttpClientImpl implements HttpClient {
+export class AxiosHttpClientImpl implements IHttpClient {
   private instance: AxiosInstance;
 
   constructor(baseURL: string) {

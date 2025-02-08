@@ -7,4 +7,5 @@ data class UpdateDoctorRequest(
     val phoneNumber: String,
     val specialty: String,
     val crmNumber: String,
+    val honorific: String,
 )

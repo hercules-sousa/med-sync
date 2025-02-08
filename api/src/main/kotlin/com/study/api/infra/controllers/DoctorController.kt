@@ -2,6 +2,7 @@ package com.study.api.infra.controllers
 
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
+import com.study.api.core.models.dto.responses.UpdateDoctorResponse
 import com.study.api.core.service.IDoctorService
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException

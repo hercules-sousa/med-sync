@@ -6,4 +6,5 @@ data class CreateDoctorRequest(
     val phoneNumber: String,
     val specialty: String,
     val crmNumber: String,
+    val honorific: String
 )

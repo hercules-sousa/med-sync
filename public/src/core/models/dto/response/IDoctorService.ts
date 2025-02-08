@@ -1,4 +1,3 @@
-import { CreateDoctorRequest } from "../models/dto/request/CreateDoctorRequest";
 import { CreateDoctorResponse } from "../models/dto/response/CreateDoctorResponse";
 import { FindAllDoctorResponse } from "../models/dto/response/FindAllDoctorResponse";
 
