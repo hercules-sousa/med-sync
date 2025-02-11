@@ -27,7 +27,10 @@ export class AxiosHttpClientImpl implements IHttpClient {
     );
 
     this.instance.interceptors.response.use(
-      (response: AxiosResponse) => response,
+      async (response: AxiosResponse) => {
+        await new Promise((resolve) => setTimeout(resolve, 3000)); // Aguarda 3 segundos
+        return response;
+      },
       (error: any) => {
         console.error("HTTP Error:", error);
         return Promise.reject(error);
