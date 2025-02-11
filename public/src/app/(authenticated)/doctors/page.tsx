@@ -1,3 +1,5 @@
+"use client";
+
 import { AxiosHttpClientImpl } from "@/core/utils/AxiosHttpClientImpl";
 import { DoctorServiceImpl } from "@/infra/services/DoctorService";
 
@@ -38,11 +40,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HonorificEnum } from "@/core/models/enums/HonorificEnum";
+import { useEffect, useState } from "react";
+import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 
-const DoctorsPage = async () => {
-  const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
-  const doctorService = new DoctorServiceImpl(axiosHttpClient);
-  const doctors = await doctorService.findAll();
+const DoctorsPage = () => {
+  const [doctors, setDoctors] = useState<Array<FindAllDoctorResponse>>([]);
+
+  useEffect(() => {
+    const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
+    const doctorService = new DoctorServiceImpl(axiosHttpClient);
+
+    doctorService.findAll().then((response) => {
+      setDoctors(response);
+    });
+  }, []);
 
   return (
     <SidebarProvider>
