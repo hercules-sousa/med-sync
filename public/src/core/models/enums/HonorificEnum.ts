@@ -1,4 +1,4 @@
 export enum HonorificEnum {
-  dr = "Dr.",
-  dra = "Dra.",
+  Dr = "Dr.",
+  Dra = "Dra.",
 }

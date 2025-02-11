@@ -40,19 +40,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HonorificEnum } from "@/core/models/enums/HonorificEnum";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
+import { CreateDoctorRequest } from "@/core/models/dto/request/CreateDoctorRequest";
 
 const DoctorsPage = () => {
   const [doctors, setDoctors] = useState<Array<FindAllDoctorResponse>>([]);
+  const [newDoctor, setNewDoctor] = useState<CreateDoctorRequest>({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    specialty: "",
+    crmNumber: "",
+    honorific: "",
+  });
 
   useEffect(() => {
     const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
     const doctorService = new DoctorServiceImpl(axiosHttpClient);
 
-    doctorService.findAll().then((response) => {
-      setDoctors(response);
-    });
+    doctorService
+      .findAll()
+      .then((response) => {
+        setDoctors(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   return (
@@ -91,37 +105,81 @@ const DoctorsPage = () => {
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="name">Name</Label>
 
-                    <Input id="name" />
+                    <Input
+                      id="name"
+                      value={newDoctor.name}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        const doc = { ...newDoctor };
+                        doc.name = event.target.value;
+                        setNewDoctor(doc);
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="email">E-mail</Label>
 
-                    <Input id="email" />
+                    <Input
+                      id="email"
+                      value={newDoctor.email}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        const doc = { ...newDoctor };
+                        doc.email = event.target.value;
+                        setNewDoctor(doc);
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="phone-number">Phone Number</Label>
 
-                    <Input id="phone-number" />
+                    <Input
+                      id="phone-number"
+                      value={newDoctor.phoneNumber}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        const doc = { ...newDoctor };
+                        doc.phoneNumber = event.target.value;
+                        setNewDoctor(doc);
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="specialty">Specialty</Label>
 
-                    <Input id="specialty" />
+                    <Input
+                      id="specialty"
+                      value={newDoctor.specialty}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        const doc = { ...newDoctor };
+                        doc.specialty = event.target.value;
+                        setNewDoctor(doc);
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="crm-number">CRM Number</Label>
 
-                    <Input id="crm-number" />
+                    <Input
+                      id="crm-number"
+                      value={newDoctor.crmNumber}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        const doc = { ...newDoctor };
+                        doc.crmNumber = event.target.value;
+                        setNewDoctor(doc);
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3 items-start">
                     <Label htmlFor="crm-number">Honorific</Label>
 
-                    <Select>
+                    <Select
+                      onValueChange={(selected) => {
+                        console.log(selected);
+                      }}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue />
                       </SelectTrigger>
@@ -140,7 +198,7 @@ const DoctorsPage = () => {
 
                 <SheetFooter className="mt-6">
                   <SheetClose asChild>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="button">Save changes</Button>
                   </SheetClose>
                 </SheetFooter>
               </SheetContent>
