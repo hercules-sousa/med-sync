@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -53,6 +54,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -87,22 +89,65 @@ const DoctorsPage = () => {
   const findAll = async () => {
     setIsLoading(true);
 
-    doctorService
-      .findAll()
-      .then((response) => {
-        setDoctors(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const response = await doctorService.findAll();
+      setDoctors(response);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to get doctors",
+        description: "An error occurred while trying to get doctors.",
       });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const create = async (data: CreateDoctorRequest) => {
-    await doctorService.create(data);
-    await findAll();
+  const createDoctor = async (data: CreateDoctorRequest) => {
+    try {
+      await doctorService.create(data);
+      form.reset({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        specialty: "",
+        crmNumber: "",
+      });
+
+      toast({
+        title: "Doctor successfully created!",
+        description: "The doctor has been added to the system.",
+      });
+
+      await findAll();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to create doctor",
+        description:
+          "An error occurred while trying to add the doctor. Please try again.",
+      });
+    }
+  };
+
+  const deleteDoctor = async (id: string) => {
+    try {
+      await doctorService.delete(id);
+      toast({
+        title: "Doctor deleted",
+        description:
+          "An error occurred while trying to delete the doctor. Please try again.",
+      });
+      await findAll();
+    } catch (error) {
+      await doctorService.delete(id);
+      toast({
+        variant: "destructive",
+        title: "Failed to delete doctor",
+        description:
+          "An error occurred while trying to delete the doctor. Please try again.",
+      });
+    }
   };
 
   return (
@@ -146,8 +191,8 @@ const DoctorsPage = () => {
                     <div className="flex flex-col gap-6 pt-6">
                       <Form {...form}>
                         <form
-                          onSubmit={form.handleSubmit((data) => {
-                            create(data);
+                          onSubmit={form.handleSubmit(async (data) => {
+                            await createDoctor(data);
                           })}
                           className="space-y-4"
                         >
@@ -232,6 +277,7 @@ const DoctorsPage = () => {
                                     onValueChange={(value) =>
                                       field.onChange(value)
                                     }
+                                    {...field}
                                   >
                                     <SelectTrigger className="w-full">
                                       <SelectValue />
@@ -245,6 +291,8 @@ const DoctorsPage = () => {
                                             </SelectItem>
                                           )
                                         )}
+
+                                        <SelectItem value="Sr">Sr.</SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
@@ -267,8 +315,7 @@ const DoctorsPage = () => {
               <DataTable
                 columns={columns({
                   onDelete: async (id) => {
-                    await doctorService.delete(id);
-                    await findAll();
+                    await deleteDoctor(id);
                   },
                 })}
                 data={doctors}

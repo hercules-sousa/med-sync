@@ -32,7 +32,14 @@ export class AxiosHttpClientImpl implements IHttpClient {
         return response;
       },
       (error: any) => {
-        console.error("HTTP Error:", error);
+        console.error("HTTP Error in AxiosHttpClientImpl:", error);
+        if (error.response?.data) {
+          console.error(
+            "HTTP Error Message in AxiosHttpClientImpl:",
+            error.response?.data
+          );
+        }
+
         return Promise.reject(error);
       }
     );
