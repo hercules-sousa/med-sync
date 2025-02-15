@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -29,7 +28,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -43,21 +41,52 @@ import { HonorificEnum } from "@/core/models/enums/HonorificEnum";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 import { CreateDoctorRequest } from "@/core/models/dto/request/CreateDoctorRequest";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, SplineIcon } from "lucide-react";
+
+const formSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  phoneNumber: z.string().min(8),
+  specialty: z.string().min(1),
+  crmNumber: z.string().min(4),
+  honorific: z.nativeEnum(HonorificEnum),
+});
 
 const DoctorsPage = () => {
   const [doctors, setDoctors] = useState<Array<FindAllDoctorResponse>>([]);
-  const [newDoctor, setNewDoctor] = useState<CreateDoctorRequest>({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    specialty: "",
-    crmNumber: "",
-    honorific: "",
+  const [isLoading, setIsLoading] = useState(false);
+  const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
+  const doctorService = new DoctorServiceImpl(axiosHttpClient);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      specialty: "",
+      crmNumber: "",
+    },
   });
 
   useEffect(() => {
-    const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
-    const doctorService = new DoctorServiceImpl(axiosHttpClient);
+    findAll();
+  }, []);
+
+  const findAll = async () => {
+    setIsLoading(true);
 
     doctorService
       .findAll()
@@ -66,8 +95,16 @@ const DoctorsPage = () => {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
+  };
+
+  const create = async (data: CreateDoctorRequest) => {
+    await doctorService.create(data);
+    await findAll();
+  };
 
   return (
     <SidebarProvider>
@@ -87,125 +124,150 @@ const DoctorsPage = () => {
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="flex flex-row justify-end">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button>Add Doctor</Button>
-              </SheetTrigger>
+          {isLoading ? (
+            <div className="flex items-center justify-center h-full w-full">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-row justify-end">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button>Add Doctor</Button>
+                  </SheetTrigger>
 
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Add doctor</SheetTitle>
-                  <SheetDescription>
-                    Add a new doctor here. Click save when you're done.
-                  </SheetDescription>
-                </SheetHeader>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Add doctor</SheetTitle>
+                      <SheetDescription>
+                        Add a new doctor here. Click save when you're done.
+                      </SheetDescription>
+                    </SheetHeader>
 
-                <div className="flex flex-col gap-6 pt-6">
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="name">Name</Label>
+                    <div className="flex flex-col gap-6 pt-6">
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit((data) => {
+                            create(data);
+                          })}
+                          className="space-y-4"
+                        >
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Full Name</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <Input
-                      id="name"
-                      value={newDoctor.name}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        const doc = { ...newDoctor };
-                        doc.name = event.target.value;
-                        setNewDoctor(doc);
-                      }}
-                    />
-                  </div>
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>E-mail</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="email">E-mail</Label>
+                          <FormField
+                            control={form.control}
+                            name="phoneNumber"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Phone Number</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <Input
-                      id="email"
-                      value={newDoctor.email}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        const doc = { ...newDoctor };
-                        doc.email = event.target.value;
-                        setNewDoctor(doc);
-                      }}
-                    />
-                  </div>
+                          <FormField
+                            control={form.control}
+                            name="specialty"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Specialty</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="phone-number">Phone Number</Label>
+                          <FormField
+                            control={form.control}
+                            name="crmNumber"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>CRM Number</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <Input
-                      id="phone-number"
-                      value={newDoctor.phoneNumber}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        const doc = { ...newDoctor };
-                        doc.phoneNumber = event.target.value;
-                        setNewDoctor(doc);
-                      }}
-                    />
-                  </div>
+                          <FormField
+                            control={form.control}
+                            name="honorific"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Honofic</FormLabel>
+                                <FormControl>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      field.onChange(value)
+                                    }
+                                  >
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        {Object.entries(HonorificEnum).map(
+                                          ([key, value]) => (
+                                            <SelectItem key={key} value={key}>
+                                              {value}.
+                                            </SelectItem>
+                                          )
+                                        )}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="specialty">Specialty</Label>
+                          <SheetFooter className="mt-6">
+                            <Button type="submit">Save changes</Button>
+                          </SheetFooter>
+                        </form>
+                      </Form>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
 
-                    <Input
-                      id="specialty"
-                      value={newDoctor.specialty}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        const doc = { ...newDoctor };
-                        doc.specialty = event.target.value;
-                        setNewDoctor(doc);
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="crm-number">CRM Number</Label>
-
-                    <Input
-                      id="crm-number"
-                      value={newDoctor.crmNumber}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        const doc = { ...newDoctor };
-                        doc.crmNumber = event.target.value;
-                        setNewDoctor(doc);
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-3 items-start">
-                    <Label htmlFor="crm-number">Honorific</Label>
-
-                    <Select
-                      onValueChange={(selected) => {
-                        console.log(selected);
-                      }}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {Object.entries(HonorificEnum).map(([key, value]) => (
-                            <SelectItem key={key} value={key}>
-                              {value}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <SheetFooter className="mt-6">
-                  <SheetClose asChild>
-                    <Button type="button">Save changes</Button>
-                  </SheetClose>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          <DataTable columns={columns} data={doctors} />
+              <DataTable columns={columns} data={doctors} />
+            </>
+          )}
         </div>
       </SidebarInset>
     </SidebarProvider>
