@@ -38,13 +38,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HonorificEnum } from "@/core/models/enums/HonorificEnum";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 import { CreateDoctorRequest } from "@/core/models/dto/request/CreateDoctorRequest";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -53,7 +52,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, SplineIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -265,7 +264,12 @@ const DoctorsPage = () => {
                 </Sheet>
               </div>
 
-              <DataTable columns={columns} data={doctors} />
+              <DataTable
+                columns={columns({
+                  onDelete: doctorService.delete,
+                })}
+                data={doctors}
+              />
             </>
           )}
         </div>

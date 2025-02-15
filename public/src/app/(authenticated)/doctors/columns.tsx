@@ -12,7 +12,13 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 
-export const columns: ColumnDef<FindAllDoctorResponse>[] = [
+interface DoctorColumnProps {
+  onDelete: (id: string) => Promise<void>;
+}
+
+export const columns = ({
+  onDelete,
+}: DoctorColumnProps): ColumnDef<FindAllDoctorResponse>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -61,6 +67,12 @@ export const columns: ColumnDef<FindAllDoctorResponse>[] = [
               onClick={() => navigator.clipboard.writeText(String(doctor.id))}
             >
               Copy doctor ID
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={async () => await onDelete(row.original.id)}
+            >
+              Delete doctor
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
