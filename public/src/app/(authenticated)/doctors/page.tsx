@@ -1,6 +1,6 @@
 "use client";
 
-import { AxiosHttpClientImpl } from "@/core/utils/AxiosHttpClientImpl";
+import { AxiosHttpClientImpl } from "@/infra/utils/AxiosHttpClientImpl";
 import { DoctorServiceImpl } from "@/infra/services/DoctorService";
 
 import { columns } from "./columns";

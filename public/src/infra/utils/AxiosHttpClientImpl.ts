@@ -1,5 +1,5 @@
+import { IHttpClient } from "@/core/utils/IHttpClient";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { IHttpClient } from "./IHttpClient";
 
 export class AxiosHttpClientImpl implements IHttpClient {
   private instance: AxiosInstance;
