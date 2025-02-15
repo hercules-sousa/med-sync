@@ -13,7 +13,7 @@ import { MoreHorizontal } from "lucide-react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
 
 interface DoctorColumnProps {
-  onDelete: (id: string) => Promise<void>;
+  onDelete: (id: string) => void;
 }
 
 export const columns = ({

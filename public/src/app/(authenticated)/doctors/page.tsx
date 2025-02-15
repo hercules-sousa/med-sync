@@ -65,7 +65,7 @@ const formSchema = z.object({
 
 const DoctorsPage = () => {
   const [doctors, setDoctors] = useState<Array<FindAllDoctorResponse>>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
   const doctorService = new DoctorServiceImpl(axiosHttpClient);
 
@@ -266,7 +266,10 @@ const DoctorsPage = () => {
 
               <DataTable
                 columns={columns({
-                  onDelete: doctorService.delete,
+                  onDelete: async (id) => {
+                    await doctorService.delete(id);
+                    await findAll();
+                  },
                 })}
                 data={doctors}
               />
