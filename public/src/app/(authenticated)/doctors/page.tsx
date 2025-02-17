@@ -55,6 +55,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import MsButton from "@/components/ms-button";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -303,7 +304,12 @@ const DoctorsPage = () => {
                           />
 
                           <SheetFooter className="mt-6">
-                            <Button type="submit">Save changes</Button>
+                            <MsButton
+                              type="submit"
+                              isLoading={form.formState.isSubmitting}
+                            >
+                              Save changes
+                            </MsButton>
                           </SheetFooter>
                         </form>
                       </Form>
