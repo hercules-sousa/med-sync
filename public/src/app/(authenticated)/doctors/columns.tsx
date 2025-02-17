@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
+import { phoneNumberMask } from "@/core/utils/phoneNumber";
 
 interface DoctorColumnProps {
   onDelete: (id: string) => void;
@@ -37,6 +38,10 @@ export const columns = ({
   {
     accessorKey: "phoneNumber",
     header: "Phone Number",
+    cell: ({ row }) => {
+      const doctor = row.original;
+      return phoneNumberMask(doctor.phoneNumber);
+    },
   },
   {
     accessorKey: "specialty",

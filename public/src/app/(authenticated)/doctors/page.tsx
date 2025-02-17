@@ -135,18 +135,17 @@ const DoctorsPage = () => {
     try {
       await doctorService.delete(id);
       toast({
-        title: "Doctor deleted",
-        description:
-          "An error occurred while trying to delete the doctor. Please try again.",
+        title: "Doctor deleted successfully",
+        description: "The doctor has been removed from the system.",
       });
       await findAll();
     } catch (error) {
-      await doctorService.delete(id);
+      console.error(error);
       toast({
         variant: "destructive",
         title: "Failed to delete doctor",
         description:
-          "An error occurred while trying to delete the doctor. Please try again.",
+          "An error occurred while trying to remove the doctor. Please check your connection and try again.",
       });
     }
   };
@@ -162,7 +161,7 @@ const DoctorsPage = () => {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Doctors</BreadcrumbLink>
+                <BreadcrumbLink href="/doctors">Doctors</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

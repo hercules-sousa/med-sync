@@ -1,14 +1,11 @@
 package com.study.api.infra.services
 
-import com.fasterxml.jackson.databind.exc.InvalidNullException
-import com.study.api.core.models.Doctor
 import com.study.api.core.models.dto.requests.CreateDoctorRequest
 import com.study.api.core.models.dto.requests.UpdateDoctorRequest
 import com.study.api.core.models.dto.responses.*
 import com.study.api.core.repositories.IDoctorRepository
 import com.study.api.core.service.IDoctorService
 import org.springframework.stereotype.Service
-import java.util.Optional
 
 @Service
 class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDoctorService {
