@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { FindAllDoctorResponse } from "@/core/models/dto/response/FindAllDoctorResponse";
-import { phoneNumberMask } from "@/core/utils/phoneNumber";
+import { phoneNumberMask } from "@/core/utils/masks/phoneNumberMask";
+import { toast } from "@/hooks/use-toast";
 
 interface DoctorColumnProps {
   onDelete: (id: string) => void;
@@ -69,7 +70,13 @@ export const columns = ({
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(String(doctor.id))}
+              onClick={() => {
+                navigator.clipboard.writeText(String(doctor.id));
+                toast({
+                  title: "Doctor Id copied!",
+                  description: "The id is now in your clipboard.",
+                });
+              }}
             >
               Copy doctor ID
             </DropdownMenuItem>

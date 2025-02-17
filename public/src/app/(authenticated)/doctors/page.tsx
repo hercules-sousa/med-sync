@@ -56,6 +56,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import MsButton from "@/components/ms-button";
+import { SpecialtyEnum } from "@/core/models/enums/SpecialtyEnum";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -192,7 +193,8 @@ const DoctorsPage = () => {
                       <Form {...form}>
                         <form
                           onSubmit={form.handleSubmit(async (data) => {
-                            await createDoctor(data);
+                            console.log(data);
+                            // await createDoctor(data);
                           })}
                           className="space-y-4"
                         >
@@ -245,7 +247,27 @@ const DoctorsPage = () => {
                               <FormItem>
                                 <FormLabel>Specialty</FormLabel>
                                 <FormControl>
-                                  <Input {...field} />
+                                  <Select
+                                    onValueChange={(value) =>
+                                      field.onChange(value)
+                                    }
+                                    {...field}
+                                  >
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        {Object.entries(SpecialtyEnum).map(
+                                          ([key, value]) => (
+                                            <SelectItem key={key} value={key}>
+                                              {value}
+                                            </SelectItem>
+                                          )
+                                        )}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
