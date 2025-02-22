@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class DoctorServiceImpl(private val doctorRepository: IDoctorRepository): IDoctorService {
 
-    override fun findAll(): List<FindAllDoctorResponse> {
-        return doctorRepository.findAll()
+    override fun findAll(page: Int, size: Int): List<FindAllDoctorResponse> {
+        return doctorRepository.findAll(page, size)
     }
 
     override fun findById(id: Long): FindByIdDoctorReponse? {

@@ -6,7 +6,7 @@ import com.study.api.core.models.dto.responses.*
 
 interface IDoctorRepository {
 
-    fun findAll(): List<FindAllDoctorResponse>
+    fun findAll(page: Int, size: Int): List<FindAllDoctorResponse>
 
     fun findById(id: Long): FindByIdDoctorReponse?
 

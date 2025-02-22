@@ -20,9 +20,9 @@ class DoctorController(private val doctorService: IDoctorService) {
     }
 
     @GetMapping
-    fun findAll(): ResponseEntity<*> {
+    fun findAll(@RequestParam(defaultValue = "1") page: Int, @RequestParam(defaultValue = "20") size: Int): ResponseEntity<*> {
         return try {
-            ResponseEntity(doctorService.findAll(), HttpStatus.OK)
+            ResponseEntity(doctorService.findAll(page, size), HttpStatus.OK)
         } catch (e: Exception) {
             ResponseEntity("An error happened when finding all doctors", HttpStatus.INTERNAL_SERVER_ERROR)
         }

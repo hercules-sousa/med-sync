@@ -53,10 +53,20 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Fingerprint, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import MsButton from "@/components/ms-button";
 import { SpecialtyEnum } from "@/core/models/enums/SpecialtyEnum";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useParams, useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -70,8 +80,16 @@ const formSchema = z.object({
 const DoctorsPage = () => {
   const [doctors, setDoctors] = useState<Array<FindAllDoctorResponse>>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
   const axiosHttpClient = new AxiosHttpClientImpl("http://localhost:8080");
   const doctorService = new DoctorServiceImpl(axiosHttpClient);
+  const searchParams = useSearchParams()
+
+  // TODO: usar os parâmetros no findAll
+  console.log("page", searchParams.get("page"))
+  console.log("size", searchParams.get("size"))
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -133,6 +151,7 @@ const DoctorsPage = () => {
   };
 
   const deleteDoctor = async (id: string) => {
+    setIsDeleting(true);
     try {
       await doctorService.delete(id);
       toast({
@@ -148,6 +167,9 @@ const DoctorsPage = () => {
         description:
           "An error occurred while trying to remove the doctor. Please check your connection and try again.",
       });
+    } finally {
+      setSelectedDoctorId("");
+      setIsDeleting(false);
     }
   };
 
@@ -193,8 +215,7 @@ const DoctorsPage = () => {
                       <Form {...form}>
                         <form
                           onSubmit={form.handleSubmit(async (data) => {
-                            console.log(data);
-                            // await createDoctor(data);
+                            await createDoctor(data);
                           })}
                           className="space-y-4"
                         >
@@ -337,12 +358,44 @@ const DoctorsPage = () => {
                     </div>
                   </SheetContent>
                 </Sheet>
+
+                <AlertDialog
+                  open={isDeleteDialogOpen}
+                  onOpenChange={setIsDeleteDialogOpen}
+                >
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+
+                      <AlertDialogDescription>
+                        Do you really want to delete this doctor?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <MsButton
+                        variant="destructive"
+                        isLoading={isDeleting}
+                        onClick={async () => {
+                          await deleteDoctor(selectedDoctorId);
+                          setIsDeleteDialogOpen(false);
+                        }}
+                      >
+                        Continue
+                      </MsButton>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
 
               <DataTable
                 columns={columns({
-                  onDelete: async (id) => {
-                    await deleteDoctor(id);
+                  onDelete: (id) => {
+                    setIsDeleteDialogOpen(true);
+                    setSelectedDoctorId(id);
                   },
                 })}
                 data={doctors}

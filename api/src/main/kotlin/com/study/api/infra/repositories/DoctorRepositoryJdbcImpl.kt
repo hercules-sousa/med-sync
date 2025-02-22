@@ -32,10 +32,15 @@ class DoctorRepositoryJdbcImpl(private val jdbcTemplate: JdbcTemplate): IDoctorR
         crmNumber = rs.getString("crm_number"),
     )}
 
-    override fun findAll(): List<FindAllDoctorResponse> {
+    override fun findAll(page: Int, size: Int): List<FindAllDoctorResponse> {
         try {
-            val sql = "SELECT * FROM DOCTORS"
-            return jdbcTemplate.query(sql, findAllRowMapper)
+            val offset = (page - 1) * size
+            val sql = """
+                SELECT * FROM DOCTORS
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+            """.trimIndent()
+
+            return jdbcTemplate.query(sql, findAllRowMapper, offset, size)
         } catch (ex: Exception) {
             throw RuntimeException("Error finding all doctors")
         }
